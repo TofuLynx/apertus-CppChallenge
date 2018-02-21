@@ -143,7 +143,6 @@ int main(int argc, char** argv) {
         std::cout << lodepng::encode("layerCOLOR.png", COLORImage, 4096,  3072, LCT_RGB) << endl;
 
         return 0;
-
     } else {
         std::cout << "Couldn't open specified file!\n";
         return -1;
