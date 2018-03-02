@@ -14,4 +14,4 @@ Optional:
 5. Bonus points if your application runs on the AXIOM Beta firmware in QEMU.
 6. Bonus points if you use an existing debayering method to recover a color image.
 
-**I think I did all the points. I am not sure about the point 5. as I couldn't install the AXIOM Beta firmware.**
+**All the six goals were done.**
