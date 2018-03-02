@@ -1,3 +1,5 @@
+// Copyright(C) 2018 Cláudio Gomes
+
 #include <stdint.h>
 #include "lodepng.h"
 #include <iostream>
