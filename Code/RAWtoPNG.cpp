@@ -11,13 +11,12 @@ using namespace std;
 int main(int argc, char** argv) {
     
     // Checks input.
-    if (argc != 2)
-	{
+    if (argc != 2) {
 		printf("Invalid command! Are you sure you wrote the filename correctly?\n");
 		return -1;
-	}
-    
-	char * fileName = argv[1];
+    }
+	
+    char * fileName = argv[1];
     
     // Tries to open file.
     ifstream rawImage (fileName, ifstream::binary);
