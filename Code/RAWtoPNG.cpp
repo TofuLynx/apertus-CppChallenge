@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
         // Getting the 4 color layers.
         int odd = 0, even = 0;
         for (long long index = 0; index < 4096*3072; index += 2) {
-            if (index%8192 < 4096) {
+            if ((index % 8192) < 4096) {
                 REDImage[even] = arrayImage[index];
                 GREEN0Image[even] = arrayImage[index + 1];
                 even++;
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 
         // Debayering to a color array (Simple Linear Interpolation).
         /*for (long long index = 0; index < 4096*3072; index += 2) {
-            if (index%8192 < 4096) {
+            if ((index%8192) < 4096) {
                 COLORImage[index*3] = arrayImage[index];
                 COLORImage[index*3+1] = arrayImage[index + 1];
                 COLORImage[index*3+2] = arrayImage[index + 4097];
@@ -91,9 +91,9 @@ int main(int argc, char** argv) {
 
         // Debayering to a color array (Bilinear Interpolation with 4 values).
         for (long long index = 0; index < 4096*3072; index += 2) {
-            if (index < 8192 || index > 4096*3070 || index%4096 < 2 || index%4096 > 4094) {
+            if (index < 8192 || index > 4096*3070 || (index % 4096) < 2 || (index % 4096) > 4094) {
                 // Avoids accessing invalid or inadequate pixels.
-                if (index%8192 < 4096) {
+                if ((index % 8192) < 4096) {
                     // Red Pixel.
                     COLORImage[index*3] = arrayImage[index];
                     COLORImage[index*3+1] = arrayImage[index + 1];
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
                     COLORImage[index*3+5] = arrayImage[index + 1];
                 }
             } else {
-                if (index%8192 < 4096) {
+                if ((index % 8192) < 4096) {
                     // Red Pixel.
                     COLORImage[index*3] = arrayImage[index];
                     COLORImage[index*3+1] = (arrayImage[index + 1] + arrayImage[index - 1] + arrayImage[index + 8193] + arrayImage[index - 8191]) >> 2;
