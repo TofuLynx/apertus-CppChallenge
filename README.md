@@ -18,6 +18,8 @@ Optional:
 
 # Instructions for linux-based environments
 
+Make sure you have the package ```build-essential``` installed!
+
 1. Open the folder and run the makefile.
 ```
 make
