@@ -1,5 +1,3 @@
-// Copyright(C) 2018 Cláudio Gomes
-
 #include <stdint.h>
 #include "lodepng.h"
 #include <iostream>
@@ -11,8 +9,9 @@ using namespace std;
 
 int main(int argc, char** argv) {
     // Checks input.
-    if (argc != 4) {
-	    std::cout << "Invalid command! Correct Usage: ./RAWtoPNG filename width height\n";
+    if (argc != 4)
+	{
+		std::cout << "Invalid command! Correct Usage: ./RAWtoPNG filename width height\n";
         return -1;
 	}
     
@@ -26,7 +25,8 @@ int main(int argc, char** argv) {
     uint32_t quarterSize    = imageSize >> 2;
 
     // Check obvious invalid width and height dimensions.
-    if (width < 2 || height < 2) {
+    if (width < 2 || height < 2)
+	{
 		std::cout << "Invalid width or height dimensions! Should be higher than 1.\n";
         return -1;
 	}
@@ -40,7 +40,14 @@ int main(int argc, char** argv) {
         rawImage.seekg(0, rawImage.beg);
 
         // Error check of given imageSize.
-        if (length < (imageSize * 1.5) || (imageSize * 1.5  - length) < -256) {
+        if (length == 0)
+        {
+            std::cout << "The file is empty!\n";
+            return -1;
+        }
+
+        if (length < (imageSize * 1.5) || (imageSize * 1.5  - length) < -256)
+        {
             std::cout << "Invalid width or height dimensions! Perhaps they are too big or too small?\n";
             return -1;
         }
@@ -91,69 +98,72 @@ int main(int argc, char** argv) {
         uint8_t * COLORImage = new uint8_t[imageSize * 3];
 
         // Debayering to a color array (Simple Linear Interpolation).
-        /*long long colorIndex;
+        /*
+        int tripleIndex;
         for (long long index = 0; index < imageSize; index += 2) {
+            tripleIndex = index * 3;
             if ((index % doubleWidth) < width) {
-                COLORImage[colorIndex    ] = arrayImage[index];
-                COLORImage[colorIndex + 1] = arrayImage[index + 1];
-                COLORImage[colorIndex + 2] = arrayImage[index + width + 1];
-                COLORImage[colorIndex + 3] = arrayImage[index];
-                COLORImage[colorIndex + 4] = arrayImage[index + 1];
-                COLORImage[colorIndex + 5] = arrayImage[index + width + 1];
+                COLORImage[tripleIndex    ] = arrayImage[index];
+                COLORImage[tripleIndex + 1] = arrayImage[index + 1];
+                COLORImage[tripleIndex + 2] = arrayImage[index + width + 1];
+                COLORImage[tripleIndex + 3] = arrayImage[index];
+                COLORImage[tripleIndex + 4] = arrayImage[index + 1];
+                COLORImage[tripleIndex + 5] = arrayImage[index + width + 1];
             } else {
-                COLORImage[colorIndex    ] = arrayImage[index - width];
-                COLORImage[colorIndex + 1] = arrayImage[index];
-                COLORImage[colorIndex + 2] = arrayImage[index + 1];
-                COLORImage[colorIndex + 3] = arrayImage[index - width];
-                COLORImage[colorIndex + 4] = arrayImage[index];
-                COLORImage[colorIndex + 5] = arrayImage[index + 1];
+                COLORImage[tripleIndex    ] = arrayImage[index - width];
+                COLORImage[tripleIndex + 1] = arrayImage[index];
+                COLORImage[tripleIndex + 2] = arrayImage[index + 1];
+                COLORImage[tripleIndex + 3] = arrayImage[index - width];
+                COLORImage[tripleIndex + 4] = arrayImage[index];
+                COLORImage[tripleIndex + 5] = arrayImage[index + 1];
             }
-        }*/
+        }
+        */
 
         // Debayering to a color array (Bilinear Interpolation with 4 values).
-        long long colorIndex;
+        int tripleIndex;
         for (long long index = 0; index < imageSize; index += 2) {
-            colorIndex = index * 3;
+            tripleIndex = index * 3;
             if (index < doubleWidth || index > (imageSize - doubleWidth) || (index % width) < 2 || (index % width) > (width - 2)) {
                 // Avoids accessing invalid or inadequate pixels.
                 if ((index % doubleWidth) < width) {
                     // Red Pixel.
-                    COLORImage[colorIndex    ] = arrayImage[index];
-                    COLORImage[colorIndex + 1] = arrayImage[index + 1];
-                    COLORImage[colorIndex + 2] = arrayImage[index + width + 1];
+                    COLORImage[tripleIndex    ] = arrayImage[index];
+                    COLORImage[tripleIndex + 1] = arrayImage[index + 1];
+                    COLORImage[tripleIndex + 2] = arrayImage[index + width + 1];
                     // Green0 Pixel.
-                    COLORImage[colorIndex + 3] = arrayImage[index];
-                    COLORImage[colorIndex + 4] = arrayImage[index + 1];
-                    COLORImage[colorIndex + 5] = arrayImage[index + width + 1];
+                    COLORImage[tripleIndex + 3] = arrayImage[index];
+                    COLORImage[tripleIndex + 4] = arrayImage[index + 1];
+                    COLORImage[tripleIndex + 5] = arrayImage[index + width + 1];
                 } else {
                     // Green1 Pixel.
-                    COLORImage[colorIndex    ] = arrayImage[index - width];
-                    COLORImage[colorIndex + 1] = arrayImage[index];
-                    COLORImage[colorIndex + 2] = arrayImage[index + 1];
+                    COLORImage[tripleIndex    ] = arrayImage[index - width];
+                    COLORImage[tripleIndex + 1] = arrayImage[index];
+                    COLORImage[tripleIndex + 2] = arrayImage[index + 1];
                     // Blue Pixel.
-                    COLORImage[colorIndex + 3] = arrayImage[index - width];
-                    COLORImage[colorIndex + 4] = arrayImage[index];
-                    COLORImage[colorIndex + 5] = arrayImage[index + 1];
+                    COLORImage[tripleIndex + 3] = arrayImage[index - width];
+                    COLORImage[tripleIndex + 4] = arrayImage[index];
+                    COLORImage[tripleIndex + 5] = arrayImage[index + 1];
                 }
             } else {
                 if ((index % doubleWidth) < width) {
                     // Red Pixel.
-                    COLORImage[colorIndex    ] = arrayImage[index];
-                    COLORImage[colorIndex + 1] = (arrayImage[index + 1] + arrayImage[index - 1] + arrayImage[index + doubleWidth + 1] + arrayImage[index - doubleWidth + 1]) >> 2;
-                    COLORImage[colorIndex + 2] = (arrayImage[index + width + 1] + arrayImage[index - width + 1] + arrayImage[index + width + 3] + arrayImage[index + width - 1]) >> 2;
+                    COLORImage[tripleIndex    ] = arrayImage[index];
+                    COLORImage[tripleIndex + 1] = (arrayImage[index + 1] + arrayImage[index - 1] + arrayImage[index + doubleWidth + 1] + arrayImage[index - doubleWidth + 1]) >> 2;
+                    COLORImage[tripleIndex + 2] = (arrayImage[index + width + 1] + arrayImage[index - width + 1] + arrayImage[index + width + 3] + arrayImage[index + width - 1]) >> 2;
                     // Green0 Pixel.
-                    COLORImage[colorIndex + 3] = (arrayImage[index] + arrayImage[index + 2] + arrayImage[index + doubleWidth] + arrayImage[index - doubleWidth]) >> 2;
-                    COLORImage[colorIndex + 4] = arrayImage[index + 1];
-                    COLORImage[colorIndex + 5] = (arrayImage[index + width + 1] + arrayImage[index - width + 1] + arrayImage[index + width + 3] + arrayImage[index + width - 1]) >> 2;
+                    COLORImage[tripleIndex + 3] = (arrayImage[index] + arrayImage[index + 2] + arrayImage[index + doubleWidth] + arrayImage[index - doubleWidth]) >> 2;
+                    COLORImage[tripleIndex + 4] = arrayImage[index + 1];
+                    COLORImage[tripleIndex + 5] = (arrayImage[index + width + 1] + arrayImage[index - width + 1] + arrayImage[index + width + 3] + arrayImage[index + width - 1]) >> 2;
                 } else {
                     // Green1 Pixel.
-                    COLORImage[colorIndex    ] = (arrayImage[index - width] + arrayImage[index + width] + arrayImage[index - width + 2] + arrayImage[index - width - 2]) >> 2;
-                    COLORImage[colorIndex + 1] = arrayImage[index];
-                    COLORImage[colorIndex + 2] = (arrayImage[index + 1] + arrayImage[index - 1] + arrayImage[index + doubleWidth + 1] + arrayImage[index - doubleWidth + 1]) >> 2;
+                    COLORImage[tripleIndex    ] = (arrayImage[index - width] + arrayImage[index + width] + arrayImage[index - width + 2] + arrayImage[index - width - 2]) >> 2;
+                    COLORImage[tripleIndex + 1] = arrayImage[index];
+                    COLORImage[tripleIndex + 2] = (arrayImage[index + 1] + arrayImage[index - 1] + arrayImage[index + doubleWidth + 1] + arrayImage[index - doubleWidth + 1]) >> 2;
                     // Blue Pixel.
-                    COLORImage[colorIndex + 3] = (arrayImage[index - width] + arrayImage[index + width] + arrayImage[index - width + 2] + arrayImage[index - width - 2]) >> 2;
-                    COLORImage[colorIndex + 4] = (arrayImage[index] + arrayImage[index + 2] + arrayImage[index + doubleWidth] + arrayImage[index - doubleWidth]) >> 2;
-                    COLORImage[colorIndex + 5] = arrayImage[index + 1];
+                    COLORImage[tripleIndex + 3] = (arrayImage[index - width] + arrayImage[index + width] + arrayImage[index - width + 2] + arrayImage[index - width - 2]) >> 2;
+                    COLORImage[tripleIndex + 4] = (arrayImage[index] + arrayImage[index + 2] + arrayImage[index + doubleWidth] + arrayImage[index - doubleWidth]) >> 2;
+                    COLORImage[tripleIndex + 5] = arrayImage[index + 1];
                 }
             }
         }
